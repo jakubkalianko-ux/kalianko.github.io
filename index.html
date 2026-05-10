@@ -15,17 +15,17 @@
         @keyframes typing { from { width: 0 } to { width: 100% } }
         @keyframes blink { 50% { border-color: transparent } }
         .shop-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1000px; width: 100%; padding: 20px; z-index: 1; }
-        .product-card { background: rgba(10, 10, 10, 0.9); border: 1px solid #222; padding: 40px; position: relative; transition: 0.3s; text-align: center; }
-        .product-card:hover { border-color: var(--neon-green); box-shadow: 0 0 30px rgba(0, 255, 65, 0.1); transform: translateY(-5px); }
-        .price-tag { display: block; font-size: 2.2rem; font-weight: bold; margin: 20px 0; color: #eee; }
-        .buy-btn { width: 100%; background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .product-card { background: rgba(10, 10, 10, 0.9); border: 1px solid #222; padding: 40px; text-align: center; transition: 0.3s; }
+        .product-card:hover { border-color: var(--neon-green); transform: translateY(-5px); }
+        .price-tag { display: block; font-size: 2.2rem; font-weight: bold; margin: 20px 0; }
+        .buy-btn { width: 100%; background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
         .buy-btn:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: #0a0a0a; border: 1px solid var(--neon-green); padding: 40px; max-width: 450px; width: 90%; position: relative; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid #333; color: var(--neon-green); font-family: 'Fira Code'; }
-        #qr-section { display: none; margin-top: 10px; }
-        .qr-img { width: 240px; height: 240px; border: 8px solid white; margin: 15px auto; display: block; border-radius: 5px; }
-        footer { padding: 50px; color: #333; font-size: 0.7rem; }
+        .modal-content { background: #0a0a0a; border: 1px solid var(--neon-green); padding: 30px; max-width: 450px; width: 95%; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: var(--neon-green); font-family: 'Fira Code'; }
+        .qr-box { background: white; padding: 15px; display: inline-block; border-radius: 10px; margin: 15px 0; }
+        .qr-img { width: 220px; height: 220px; display: block; }
+        .bank-info { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -37,32 +37,32 @@
             <h2 style="color: var(--neon-green);">K-ENCRYPTOR</h2>
             <p>Military-grade Python encryption module.</p>
             <span class="price-tag">499 CZK</span>
-            <button class="buy-btn" onclick="openOrder('K-ENCRYPTOR', 'var(--neon-green)')">ORDER & PAY</button>
+            <button class="buy-btn" onclick="openOrder('K-ENCRYPTOR', '499', 'var(--neon-green)')">ORDER & PAY</button>
         </div>
         <div class="product-card" style="border-color: var(--neon-blue);">
             <h2 style="color: var(--neon-blue);">K-AI_CORE</h2>
             <p>Advanced NLP neural core.</p>
             <span class="price-tag">799 CZK</span>
-            <button class="buy-btn" style="border-color: var(--neon-blue); color: var(--neon-blue);" onclick="openOrder('K-AI_CORE', 'var(--neon-blue)')">ORDER & PAY</button>
+            <button class="buy-btn" style="border-color: var(--neon-blue); color: var(--neon-blue);" onclick="openOrder('K-AI_CORE', '799', 'var(--neon-blue)')">ORDER & PAY</button>
         </div>
     </div>
 
     <div id="modal">
         <div class="modal-content" id="modal-box">
             <h2 id="order-title">> ORDER_ENTRY</h2>
-            <form id="purchase-form" action="https://formspree.io/f/xeenprvg" method="POST" onsubmit="showQR(event)">
-                <input type="hidden" name="product" id="prod-input">
-                <input type="email" name="email" placeholder="ENTER_EMAIL_ADDRESS" required>
-                <input type="text" name="ig" placeholder="INSTAGRAM_HANDLE">
-                <button type="submit" class="buy-btn">Confirm & Show QR</button>
-            </form>
-            <div id="qr-section">
-                <p style="color: var(--neon-green);">[ REQUEST_LOGGED ]</p>
-                <p>Naskenuj QR kód pro platbu:</p>
-                <img src="https://i.postimg.cc/mD8m8vS3/qr-kalianko.jpg" alt="QR Platba" class="qr-img">
-                <p style="font-size: 0.75rem;">Po zaplacení ti soubor přijde na email. Kontroluj i SPAM.</p>
-                <button class="buy-btn" onclick="closeOrder()">HOTOVO</button>
+            <div class="bank-info">Účet: 4875022083/0800</div>
+            
+            <div class="qr-box">
+                <img id="qr-display" src="" alt="QR Platba" class="qr-img">
             </div>
+
+            <form action="https://formspree.io/f/xeenprvg" method="POST">
+                <input type="hidden" name="product" id="prod-input">
+                <input type="email" name="email" placeholder="TVŮJ EMAIL" required>
+                <input type="text" name="ig" placeholder="INSTAGRAM (VOLITELNÉ)">
+                <button type="submit" class="buy-btn">POTVRDIT A ODESLAT ÚDAJE</button>
+            </form>
+            <p onclick="closeOrder()" style="cursor:pointer; color:#444; margin-top:15px; font-size:0.7rem;">[ ZAVŘÍT ]</p>
         </div>
     </div>
 
@@ -70,7 +70,7 @@
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "0101"; const fontSize = 14; const columns = canvas.width / fontSize;
+        const letters = "01"; const fontSize = 14; const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
         function drawMatrix() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -82,20 +82,16 @@
             }
         }
         setInterval(drawMatrix, 33);
-        function openOrder(name, color) {
+
+        function openOrder(name, price, color) {
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('order-title').innerText = "> " + name;
             document.getElementById('prod-input').value = name;
             document.getElementById('modal-box').style.borderColor = color;
-            document.getElementById('purchase-form').style.display = 'block';
-            document.getElementById('qr-section').style.display = 'none';
-        }
-        function showQR(event) {
-            const form = event.target;
-            fetch(form.action, { method: form.method, body: new FormData(form), headers: { 'Accept': 'application/json' } });
-            event.preventDefault();
-            document.getElementById('purchase-form').style.display = 'none';
-            document.getElementById('qr-section').style.display = 'block';
+            
+            // Generování QR kódu s tvým číslem účtu a správnou částkou
+            const qrUrl = `https://api.paylibo.com/paylibo/generator/czech/image?accountNumber=4875022083&bankCode=0800&amount=${price}&currency=CZK&message=${name}`;
+            document.getElementById('qr-display').src = qrUrl;
         }
         function closeOrder() { document.getElementById('modal').style.display = 'none'; }
     </script>
