@@ -1,106 +1,178 @@
-
 <!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALIANKO | Elite Tech Tools</title>
+    <title>KALIANKO_ROOT | SECURE_SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-green: #00ff41; --neon-blue: #0080ff; --neon-red: #ff3131; --bg-black: #050505; }
-        * { box-sizing: border-box; }
-        body { background-color: var(--bg-black); color: white; font-family: 'Fira Code', monospace; margin: 0; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        :root { --neon-green: #00ff41; --neon-blue: #0080ff; --neon-red: #ff3131; --neon-gold: #ffcc00; --bg-black: #000000; }
+        * { box-sizing: border-box; cursor: crosshair; }
+        body, html { background-color: var(--bg-black); color: white; font-family: 'Fira Code', monospace; margin: 0; overflow-x: hidden; }
+
+        .trail { position: fixed; width: 4px; height: 4px; background: var(--neon-green); border-radius: 50%; pointer-events: none; z-index: 9999; box-shadow: 0 0 15px var(--neon-green); transition: 0.1s; }
+
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 5000; display: flex; justify-content: center; align-items: center; color: var(--neon-green); }
+        .scanner-line { width: 100%; height: 2px; background: var(--neon-green); position: absolute; top: 0; animation: scan 1.2s linear infinite; box-shadow: 0 0 20px var(--neon-green); }
+        @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
+
+        #main-content { display: none; opacity: 0; transition: opacity 0.8s; flex-direction: column; align-items: center; }
         #matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
-        header { padding: 40px 20px; text-align: center; width: 100%; }
-        .typewriter h1 { color: var(--neon-green); font-size: 2.2rem; margin: 0; letter-spacing: 5px; text-shadow: 0 0 15px var(--neon-green); border-right: 3px solid var(--neon-green); display: inline-block; white-space: nowrap; overflow: hidden; animation: typing 2s steps(15, end), blink 0.7s infinite; }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink { 50% { border-color: transparent } }
-        
-        .sale-banner { background: var(--neon-red); color: black; font-weight: bold; width: 100%; padding: 10px; text-align: center; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px var(--neon-red); }
-        
-        .shop-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1000px; width: 100%; padding: 20px; z-index: 1; }
-        .product-card { background: rgba(10, 10, 10, 0.9); border: 1px solid #222; padding: 40px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+
+        .sale-banner { background: var(--neon-red); color: black; font-weight: bold; width: 100%; padding: 10px; text-align: center; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; z-index: 10; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+
+        header { padding: 60px 20px; text-align: center; }
+        .glitch { font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--neon-green); letter-spacing: 15px; animation: glitch 500ms infinite; }
+        @keyframes glitch { 0% { text-shadow: 2px 0 0 red, -2px 0 0 blue; } 50% { text-shadow: -2px 0 0 red, 2px 0 0 blue; } 100% { text-shadow: 2px 0 0 red, -2px 0 0 blue; } }
+
+        .cleanup-hub { width: 90%; max-width: 1100px; background: rgba(5,5,5,0.9); border: 1px solid #222; padding: 25px; margin-bottom: 40px; }
+        .hub-title { color: var(--neon-gold); font-size: 1rem; margin-bottom: 15px; border-bottom: 1px solid #222; display: block; }
+        .cmd-box { background: #000; border-left: 3px solid var(--neon-blue); padding: 10px; margin: 10px 0; color: var(--neon-blue); font-size: 0.9rem; font-weight: bold; }
+
+        .shop-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1300px; width: 100%; padding: 20px; }
+        .product-card { background: rgba(10,10,10,0.95); border: 1px solid #111; padding: 30px 20px; text-align: center; position: relative; transition: 0.3s; display: flex; flex-direction: column; }
         .product-card:hover { border-color: var(--neon-green); transform: translateY(-5px); }
+
+        .info-icon { position: absolute; top: 15px; left: 15px; color: #444; border: 1px solid #444; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 20px; cursor: help; }
+        .info-icon:hover .tooltip { visibility: visible; opacity: 1; }
+        .tooltip { visibility: hidden; width: 220px; background: #000; color: #ccc; text-align: left; border: 1px solid var(--neon-green); padding: 15px; position: absolute; z-index: 100; top: 30px; left: 0; opacity: 0; transition: 0.3s; font-size: 0.75rem; line-height: 1.4; }
+
+        .price-tag { font-size: 2.8rem; font-weight: 900; margin: 10px 0; color: #fff; display: block; }
+        .old-price { text-decoration: line-through; color: #444; font-size: 1rem; }
         
-        .old-price { text-decoration: line-through; color: #555; font-size: 1.2rem; display: block; }
-        .price-tag { display: block; font-size: 2.8rem; font-weight: bold; margin: 10px 0; color: white; }
+        .buy-btn { width: 100%; background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 14px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+        .buy-btn:hover:not(:disabled) { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
+
+        .vip-card { border-color: var(--neon-gold) !important; background: linear-gradient(145deg, #000, #1a1500) !important; }
         
-        .buy-btn { width: 100%; background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        .buy-btn:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
+        .support-box { width: 90%; max-width: 800px; border: 1px solid #111; background: rgba(10,10,10,0.5); padding: 25px; margin: 50px 0; text-align: center; }
+        .support-box p { font-size: 0.8rem; color: #666; line-height: 1.6; font-style: italic; margin: 0; }
+
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 6000; justify-content: center; align-items: center; }
+        .modal-content { background: #000; border: 1px solid var(--neon-green); padding: 40px; max-width: 450px; width: 90%; text-align: center; }
+        .acc-box { background: #050505; border: 1px dashed var(--neon-green); padding: 20px; margin: 20px 0; }
+        input { width: 100%; padding: 12px; margin: 15px 0; background: #080808; border: 1px solid #222; color: var(--neon-green); font-family: 'Fira Code'; outline: none; }
         
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: #0a0a0a; border: 1px solid var(--neon-green); padding: 30px; max-width: 450px; width: 95%; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: var(--neon-green); font-family: 'Fira Code'; }
-        .qr-box { background: white; padding: 10px; display: inline-block; border-radius: 10px; margin: 15px 0; }
-        .qr-img { width: 220px; height: 220px; display: block; }
+        footer { padding: 40px; color: #111; font-size: 0.6rem; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-    <div class="sale-banner">FLASH SALE: 48H ONLY - UP TO 80% OFF</div>
-    <canvas id="matrix"></canvas>
-    <header><div class="typewriter"><h1>KALIANKO_ROOT</h1></div></header>
 
-    <div class="shop-container">
-        <div class="product-card">
-            <h2 style="color: var(--neon-green);">K-ENCRYPTOR</h2>
-            <p>Military-grade Python encryption module.</p>
-            <span class="old-price">499 CZK</span>
-            <span class="price-tag" style="color: var(--neon-green);">99 CZK</span>
-            <button class="buy-btn" onclick="openOrder('K-ENCRYPTOR', '99', 'var(--neon-green)')">ORDER & PAY</button>
+    <div id="intro-screen">
+        <div class="scanner-line"></div>
+        <div style="font-size: 1rem;">IDENTIFIKACE_GÉNIA...</div>
+    </div>
+
+    <div id="main-content">
+        <div class="sale-banner">FLASH_SALE: -80% NA VŠECHNY MODULY | ČASOVĚ OMEZENO</div>
+        <canvas id="matrix"></canvas>
+        
+        <header>
+            <div class="glitch">KALIANKO</div>
+            <p style="color: #222; font-size: 0.6rem; letter-spacing: 5px; margin-top: 10px;">[ PRIVATE_DEVELOPER_HUB ]</p>
+        </header>
+
+        <div class="cleanup-hub">
+            <span class="hub-title">> _PC_MAINTENANCE (CMD_PŘÍKAZY)</span>
+            <div class="cmd-box"><code>del /q /f /s %temp%\*</code></div>
+            <div class="cmd-box"><code>ipconfig /flushdns</code></div>
         </div>
-        <div class="product-card" style="border-color: var(--neon-blue);">
-            <h2 style="color: var(--neon-blue);">K-AI_CORE</h2>
-            <p>Advanced NLP neural core.</p>
-            <span class="old-price">799 CZK</span>
-            <span class="price-tag" style="color: var(--neon-blue);">199 CZK</span>
-            <button class="buy-btn" style="border-color: var(--neon-blue); color: var(--neon-blue);" onclick="openOrder('K-AI_CORE', '199', 'var(--neon-blue)')">ORDER & PAY</button>
+
+        <div class="shop-container">
+            <div class="product-card" style="border-color: #222;">
+                <div class="info-icon">i<span class="tooltip">Základní Python kód pro pochopení AI logiky. Ideální pro tvé první kroky v programování.</span></div>
+                <h3 style="color: #444; font-size: 0.7rem;">[ K-AI_FREE ]</h3>
+                <span class="price-tag">0,-</span>
+                <button class="buy-btn" style="border-color: #222; color: #222;" onclick="openFree()">ZÍSKAT</button>
+            </div>
+            <div class="product-card">
+                <div class="info-icon">i<span class="tooltip">Vojenské AES-256 šifrování. Zabezpečí tvé tajné zprávy tak, že je nikdo bez klíče nepřečte.</span></div>
+                <h3 style="color: var(--neon-green); font-size: 0.7rem;">[ K-ENCRYPTOR ]</h3>
+                <span class="old-price">499,-</span>
+                <span class="price-tag">99,-</span>
+                <button class="buy-btn" onclick="openOrder('K-ENCRYPTOR', '99')">STÁHNOUT</button>
+            </div>
+            <div class="product-card" style="border-color: var(--neon-blue);">
+                <div class="info-icon">i<span class="tooltip">Kompletní neuronové jádro. Nauč svůj program komunikovat a zpracovávat složitá data.</span></div>
+                <h3 style="color: var(--neon-blue); font-size: 0.7rem;">[ K-AI_CORE ]</h3>
+                <span class="old-price">799,-</span>
+                <span class="price-tag">199,-</span>
+                <button class="buy-btn" style="border-color: var(--neon-blue); color: var(--neon-blue);" onclick="openOrder('K-AI_CORE', '199')">STÁHNOUT</button>
+            </div>
+            <div class="product-card vip-card">
+                <div class="info-icon">i<span class="tooltip">Privátní přístup k neveřejným exploitům a VIP komunitě. Aktuálně uzamčeno.</span></div>
+                <h3 style="color: var(--neon-gold); font-size: 0.7rem;">[ VIP_GATEWAY ]</h3>
+                <span class="price-tag" style="color: var(--neon-gold);">LOCKED</span>
+                <button class="buy-btn" disabled style="border-color: #333; color: #333;">ACCESS_DENIED</button>
+            </div>
         </div>
+
+        <div class="support-box">
+            <p>"Tento projekt vedu kompletně sám – od kódu po design. Každá objednávka mě motivuje makat dál. Budu vděčný za každý support."</p>
+            <span style="color: var(--neon-green); font-weight: bold; margin-top: 10px; display: block;">> KALIAN_KO_ROOT</span>
+        </div>
+
+        <footer>&copy; 2026 KALIANKO_ROOT | VYROBENO_GÉNIEM</footer>
     </div>
 
     <div id="modal">
-        <div class="modal-content" id="modal-box">
-            <h2 id="order-title">> ORDER_ENTRY</h2>
-            <p id="price-confirm" style="color: #888;"></p>
-            
-            <div class="qr-box">
-                <img id="qr-img" src="" alt="QR Platba" class="qr-img">
+        <div class="modal-content">
+            <h2 id="order-title" style="color: var(--neon-green);"></h2>
+            <div class="acc-box">
+                <span style="font-size: 0.6rem; color: #444;">PŘEVOD NA ÚČET:</span>
+                <span style="color: var(--neon-green); font-size: 1.3rem; font-weight: bold; display: block; margin-top: 5px;">4875022083/0800</span>
+                <p id="price-display" style="margin-top: 10px; font-weight: bold;"></p>
             </div>
-
             <form action="https://formspree.io/f/xeenprvg" method="POST">
                 <input type="hidden" name="product" id="prod-input">
-                <input type="email" name="email" placeholder="TVŮJ EMAIL" required>
-                <input type="text" name="ig" placeholder="INSTAGRAM (VOLITELNÉ)">
+                <input type="email" name="email" placeholder="TVŮJ_EMAIL" required>
                 <button type="submit" class="buy-btn">POTVRDIT PLATBU</button>
             </form>
-            <p onclick="closeOrder()" style="cursor:pointer; color:#444; margin-top:15px; font-size:0.7rem;">[ ZAVŘÍT ]</p>
+            <p onclick="closeOrder()" style="cursor:pointer; color:#222; margin-top:20px; font-size:0.6rem;">[ ZPĚT ]</p>
         </div>
     </div>
 
     <script>
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.left = e.pageX + 'px'; trail.style.top = e.pageY + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => { trail.style.transform = 'scale(0)'; trail.style.opacity = '0'; }, 100);
+            setTimeout(() => { trail.remove(); }, 500);
+        });
+
+        setTimeout(() => { 
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+            setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; }, 50);
+        }, 1200);
+
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "01"; const fontSize = 14; const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        const drops = Array(Math.floor(canvas.width/14)).fill(1);
         function drawMatrix() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#00ff41"; for (let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
+            ctx.fillStyle = "#00ff41"; drops.forEach((y, i) => {
+                ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
+                if (y*14 > canvas.height && Math.random() > 0.98) drops[i] = 0; drops[i]++;
+            });
         }
-        setInterval(drawMatrix, 33);
+        setInterval(drawMatrix, 35);
 
-        function openOrder(name, price, color) {
+        function openOrder(name, price) {
             document.getElementById('modal').style.display = 'flex';
-            document.getElementById('order-title').innerText = "> " + name;
-            document.getElementById('price-confirm').innerText = "Cena: " + price + " CZK (Účet: 4875022083/0800)";
-            document.getElementById('prod-input').value = name + "_SALE";
-            document.getElementById('modal-box').style.borderColor = color;
-            const qrUrl = `https://api.paylibo.com/paylibo/generator/czech/image?accountNumber=4875022083&bankCode=0800&amount=${price}&currency=CZK&message=Objednavka_${name}`;
-            document.getElementById('qr-img').src = qrUrl;
+            document.getElementById('order-title').innerText = "> EXECUTE: " + name;
+            document.getElementById('prod-input').value = name;
+            document.getElementById('price-display').innerText = "CENA: " + price + " CZK";
+        }
+        function openFree() {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('order-title').innerText = "> INIT: K-AI_FREE";
+            document.getElementById('prod-input').value = "FREE_BETA";
+            document.getElementById('price-display').innerText = "CENA: 0 CZK";
         }
         function closeOrder() { document.getElementById('modal').style.display = 'none'; }
     </script>
