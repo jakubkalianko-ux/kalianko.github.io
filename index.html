@@ -3,213 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalianko | Softwarová Distribuce</title>
+    <title>Kalianko | AI Powered Oracle Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0f1a; --card: #161b2a; --accent: #38bdf8;
-            --border: #2d3748; --text: #f8fafc; --dim: #94a3b8;
-            --success: #22c55e;
+            --bg: #05070a; --card: #0d1117; --accent: #38bdf8;
+            --border: #1f2937; --text: #f8fafc; --dim: #94a3b8;
+            --success: #22c55e; --gold: #fbbf24; --ai: #a855f7;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
-
-        nav {
-            background: rgba(11, 15, 26, 0.95); backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border); padding: 1rem 5%;
-            position: sticky; top: 0; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo { font-family: 'JetBrains Mono'; font-weight: bold; font-size: 1.4rem; color: var(--accent); }
-        .search-bar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 1rem; width: 40%; color: white; outline: none; }
-
-        .container { display: flex; padding: 2rem 5%; gap: 2rem; min-height: 80vh; }
-        aside { width: 250px; flex-shrink: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.3; }
+        nav { background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); padding: 1rem 5%; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'JetBrains Mono'; font-weight: bold; color: var(--accent); font-size: 1.4rem; letter-spacing: -1px; }
+        .container { display: flex; padding: 2rem 5%; gap: 3rem; position: relative; }
+        aside { width: 260px; flex-shrink: 0; }
         .main-content { flex-grow: 1; }
-
-        .filter-group { margin-bottom: 2.5rem; }
-        .filter-group h4 { margin-bottom: 1rem; text-transform: uppercase; font-size: 0.75rem; color: var(--dim); }
-        .filter-link { display: block; color: var(--text); text-decoration: none; margin-bottom: 0.6rem; cursor: pointer; font-size: 0.9rem; }
-        .filter-link:hover { color: var(--accent); }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .product-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; transition: 0.3s; display: flex; flex-direction: column; }
-        .product-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-        
-        .footer-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1.2rem; margin-top: auto; }
-        .price { font-weight: 800; font-size: 1.2rem; }
-        .btn-detail { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
-        .btn-buy { background: var(--accent); color: #000; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 700; border: none; }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center;
-        }
-        .modal-content { background: var(--card); padding: 2.5rem; border-radius: 15px; max-width: 500px; width: 95%; border: 1px solid var(--accent); position: relative; }
-        .close-modal { position: absolute; top: 15px; right: 20px; cursor: pointer; color: var(--dim); font-size: 1.5rem; }
-        
+        .filter-group { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
+        .filter-link { display: block; color: var(--dim); text-decoration: none; margin-bottom: 10px; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+        .filter-link:hover { color: var(--accent); padding-left: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .product-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem; transition: 0.4s ease; display: flex; flex-direction: column; }
+        .product-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 0 20px rgba(56, 189, 248, 0.1); }
+        .reviews-section { margin-top: 5rem; padding-bottom: 4rem; }
+        .review-card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; }
+        .stars { color: var(--gold); margin-bottom: 0.5rem; }
+        #ai-terminal { position: fixed; bottom: 90px; right: 30px; width: 350px; height: 450px; background: rgba(13, 17, 23, 0.98); border: 1px solid var(--ai); border-radius: 12px; display: none; flex-direction: column; z-index: 3000; font-family: 'JetBrains Mono', monospace; }
+        .ai-header { background: var(--ai); color: #000; padding: 10px; font-weight: bold; display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .ai-messages { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.8rem; display: flex; flex-direction: column; gap: 10px; }
+        .ai-msg { color: var(--ai); border-left: 2px solid var(--ai); padding-left: 8px; }
+        .user-msg { color: var(--text); align-self: flex-end; text-align: right; border-right: 2px solid var(--dim); padding-right: 8px; }
+        .ai-input-area { border-top: 1px solid var(--border); padding: 10px; display: flex; }
+        #ai-input { background: transparent; border: none; color: white; width: 100%; outline: none; }
+        .ai-trigger { position: fixed; bottom: 20px; right: 20px; background: var(--ai); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 2999; font-weight: bold; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal.open { display: flex; }
+        .modal-content { background: var(--card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--accent); max-width: 500px; width: 90%; position: relative; animation: modalIn 0.4s ease; }
+        @keyframes modalIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .btn-buy { background: var(--accent); color: #000; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        input { width: 100%; padding: 12px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 8px; margin-bottom: 15px; outline: none; }
+        footer { text-align: center; padding: 3rem; color: var(--dim); border-top: 1px solid var(--border); font-size: 0.8rem; }
         .step { display: none; }
         .step.active { display: block; }
-        h2 { margin-bottom: 1rem; color: var(--accent); }
-        .detail-text { color: var(--dim); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
-
-        input { width: 100%; padding: 12px; background: #0b0f1a; border: 1px solid var(--border); border-radius: 6px; color: white; margin-bottom: 1rem; outline: none; }
-        .bank-details { background: #0b0f1a; padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--accent); font-family: 'JetBrains Mono'; }
-        
-        .btn-action { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #000; margin-top: 10px; }
-        
-        footer { text-align: center; padding: 40px; color: var(--dim); border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
-
+    <canvas id="bg-canvas"></canvas>
     <nav>
-        <div class="logo">KALIANKO<span>_STORE</span></div>
-        <input type="text" id="searchInput" class="search-bar" placeholder="Hledat modul..." onkeyup="searchProducts()">
-        <div style="font-size: 0.75rem; color: var(--success); font-family: 'JetBrains Mono';">SUPPORT: kaliankojakub096@gmail.com</div>
+        <div class="logo">KALIANKO_STORE</div>
+        <div style="font-size: 0.7rem; color: var(--success); font-family: 'JetBrains Mono';">ROOT ACCESS: kaliankojakub096@gmail.com</div>
     </nav>
-
     <div class="container">
         <aside>
             <div class="filter-group">
-                <h4>Kategorie</h4>
-                <div class="filter-link" onclick="filterCat('all')">Všechny produkty</div>
-                <div class="filter-link" onclick="filterCat('Networking')">Síťové nástroje</div>
+                <h4 style="color:var(--accent); font-size:0.7rem; margin-bottom:1rem;">SYSTÉM</h4>
+                <div class="filter-link" onclick="filterCat('all')">Všechny moduly</div>
+                <div class="filter-link" onclick="filterCat('Networking')">Sítě</div>
                 <div class="filter-link" onclick="filterCat('Automation')">Automatizace</div>
-                <div class="filter-link" onclick="filterCat('Security')">Zabezpečení</div>
+                <div class="filter-link" onclick="filterCat('Security')">Bezpečnost</div>
             </div>
             <div class="filter-group">
-                <h4>Informace</h4>
-                <p style="font-size: 0.8rem; color: var(--dim)">Bankovní kód: <b>0800</b></p>
-                <p style="font-size: 0.8rem; color: var(--dim)">Emailová podpora: 24/7</p>
+                <h4 style="color:var(--accent); font-size:0.7rem; margin-bottom:1rem;">BANKA</h4>
+                <p style="font-size: 0.85rem; font-family: 'JetBrains Mono';">4875022083/0800</p>
             </div>
         </aside>
         <main class="main-content">
             <div class="grid" id="productGrid"></div>
+            <section class="reviews-section">
+                <h2 style="color:var(--accent); margin-bottom:2rem; text-align:center;">Zákaznická zóna</h2>
+                <div class="grid">
+                    <div class="review-card"><div class="stars">★★★★★</div><p style="font-style:italic; font-size:0.9rem;">"Skripty od Kalianka jsou čisté a bezpečné. Nejlepší nákup."</p><p style="margin-top:10px; font-weight:bold; font-size:0.8rem; color:var(--accent)">Martin K.</p></div>
+                    <div class="review-card"><div class="stars">★★★★★</div><p style="font-style:italic; font-size:0.9rem;">"Podpora na mailu vyřešila všechno hned. Top!"</p><p style="margin-top:10px; font-weight:bold; font-size:0.8rem; color:var(--accent)">Jakub D.</p></div>
+                </div>
+            </section>
         </main>
     </div>
 
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            
-            <div id="stepDetail" class="step">
-                <h2 id="detTitle"></h2>
-                <div id="detContent" class="detail-text"></div>
-                <button class="btn-action" onclick="toStep1()">Objednat licenci</button>
-            </div>
+    <div class="ai-trigger" onclick="toggleAI()">AI</div>
+    <div id="ai-terminal">
+        <div class="ai-header"><span>K-AI ORACLE</span><span style="cursor:pointer" onclick="toggleAI()">[X]</span></div>
+        <div class="ai-messages" id="ai-msgs"><div class="ai-msg">Neuronová síť aktivní. Jak ti můžu pomoci s výběrem modulu?</div></div>
+        <div class="ai-input-area"><input type="text" id="ai-input" placeholder="Zeptej se AI..." onkeydown="if(event.key==='Enter') sendAI()"></div>
+    </div>
 
-            <div id="step1" class="step">
-                <h2>Objednávka</h2>
-                <p>Na váš e-mail vám zašleme soubory po přijetí platby.</p>
-                <form id="orderForm" action="https://formspree.io/f/mqldaqwx" method="POST">
-                    <input type="email" name="email_zakaznika" id="customerEmail" placeholder="vas@email.cz" required>
+    <div id="productModal" class="modal" onclick="if(event.target==this) closeModal()">
+        <div class="modal-content">
+            <div id="step1" class="step active">
+                <h2 id="modalTitle" style="color:var(--accent); margin-bottom:1rem;"></h2>
+                <p id="modalDesc" style="color:var(--dim); margin-bottom:1.5rem; font-size:0.9rem;"></p>
+                <form id="orderForm" action="https://formspree.io/f/xeenprvg" method="POST">
+                    <input type="email" name="email" id="customerEmail" placeholder="Váš doručovací e-mail" required>
                     <input type="hidden" name="produkt" id="hiddenProduct">
                     <input type="hidden" name="cena" id="hiddenPrice">
-                    <button type="button" class="btn-action" onclick="toStep2()">Zobrazit platební údaje</button>
+                    <button type="button" class="btn-action" onclick="toStep2()">Přejít k platbě</button>
                 </form>
             </div>
-
             <div id="step2" class="step">
                 <h2>Platební údaje</h2>
-                <p>Převeďte částku na účet. Do **zprávy pro příjemce** napište název modulu.</p>
-                <div class="bank-details">
-                    <span style="font-size: 0.7rem; color: var(--dim)">ČÍSLO ÚČTU:</span><br>
-                    <strong style="color: white; font-size: 1.1rem;">4875022083 / 0800</strong><br><br>
-                    <span style="font-size: 0.7rem; color: var(--dim)">ČÁSTKA K ÚHRADĚ:</span><br>
-                    <span id="modalPrice" style="color: var(--accent); font-weight: bold;"></span>
+                <div style="background:#000; padding:1.5rem; border-radius:12px; border-left:4px solid var(--accent); margin:1.5rem 0;">
+                    <p style="font-size:0.7rem; color:var(--accent)">TARGET ACCOUNT:</p>
+                    <p style="font-size:1.2rem; font-family:'JetBrains Mono';">4875022083 / 0800</p>
+                    <p style="font-size:0.7rem; color:var(--accent); margin-top:10px;">AMOUNT:</p>
+                    <p style="font-size:1.2rem; font-family:'JetBrains Mono';" id="displayPrice"></p>
                 </div>
-                <button type="button" class="btn-action" onclick="submitForm()">Potvrdit odeslání platby</button>
+                <button class="btn-action" onclick="finishOrder()">Potvrdit transakci</button>
             </div>
-
-            <div id="step3" class="step">
-                <h2 style="color: var(--success)">Odesláno!</h2>
-                <p>Objednávka byla odeslána na kaliankojakub096@gmail.com. Po ověření platby na účtu <b>4875022083/0800</b> vám zašleme kód.</p>
-                <button class="btn-action" onclick="closeModal()">Zavřít</button>
+            <div id="step3" class="step" style="text-align:center;">
+                <h2 style="color:var(--success)">PŘIJATO!</h2>
+                <p>Jakmile uvidíme platbu na účtu 4875022083/0800, pošleme soubory na tvůj mail.</p>
+                <button class="btn-action" onclick="closeModal()">OK</button>
             </div>
         </div>
     </div>
 
-    <footer>&copy; 2026 KALIANKO_STORE | Kontakt: kaliankojakub096@gmail.com</footer>
+    <footer>&copy; 2026 KALIANKO_STORE // kaliankojakub096@gmail.com</footer>
 
     <script>
-        const products = [
-            { id: 1, cat: 'Networking', name: 'K-WIFI_SCAN', price: 149, short: 'Analýza lokální sítě a portů.', long: 'Profesionální skener pro mapování okolních WiFi sítí a analýzu zabezpečení.' },
-            { id: 2, cat: 'Automation', name: 'K-AUTO_CLICK', price: 49, short: 'Pokročilé makro simulace.', long: 'Skript pro automatizaci klikání a pohybů myši s vysokou přesností.' },
-            { id: 3, cat: 'Security', name: 'K-ENCRYPTOR', price: 99, short: 'Šifrování dat AES-256.', long: 'Zabezpečte své soubory pomocí nejsilnějšího dostupného šifrování.' }
-        ];
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spX: Math.random()*0.4-0.2, spY: Math.random()*0.4-0.2 });
+        function anim() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#38bdf8';
+            particles.forEach(p => { p.x += p.spX; p.y += p.spY; if(p.x<0||p.x>canvas.width) p.spX*=-1; if(p.y<0||p.y>canvas.height) p.spY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(anim);
+        }
+        anim();
 
-        for(let i=4; i<=50; i++){
-            const cat = ['Networking', 'Automation', 'Security'][i%3];
-            products.push({ id: i, cat, name: `K_MODUL_${i}`, price: 100 + i, short: `Technické řešení pro ${cat.toLowerCase()}.`, long: `Plná verze modulu se zaměřením na výkon a čistý kód.` });
+        function toggleAI() { const t = document.getElementById('ai-terminal'); t.style.display = t.style.display === 'flex' ? 'none' : 'flex'; }
+        function sendAI() {
+            const i = document.getElementById('ai-input'); const m = document.getElementById('ai-msgs');
+            if(!i.value) return; m.innerHTML += `<div class="user-msg">${i.value}</div>`;
+            const v = i.value.toLowerCase(); i.value = '';
+            setTimeout(() => {
+                let r = "Moc ti nerozumím, ale moduly od Kalianka jsou špička v oboru!";
+                if(v.includes('cena')) r = "Ceny začínají už na 49 CZK. Stačí kliknout na Koupit.";
+                if(v.includes('kontakt')) r = "Piš na: kaliankojakub096@gmail.com";
+                m.innerHTML += `<div class="ai-msg">${r}</div>`; m.scrollTop = m.scrollHeight;
+            }, 600);
+        }
+
+        const products = [
+            { id: 1, cat: 'Networking', name: 'K-WIFI_SCAN', price: 149, desc: 'Profesionální mapování WiFi a analýza sítí.' },
+            { id: 2, cat: 'Automation', name: 'K-AUTO_CLICK', price: 49, desc: 'Simulace lidského klikání s náhodnou prodlevou.' },
+            { id: 3, cat: 'Security', name: 'K-ENCRYPTOR', price: 99, desc: 'Vojenské AES-256 šifrování pro vaše data.' }
+        ];
+        for(let i=4; i<=50; i++) {
+            const cats = ['Networking', 'Automation', 'Security'];
+            products.push({ id: i, cat: cats[i%3], name: `K_MODUL_X${i}`, price: 100+i, desc: `Specializovaný technický modul.` });
         }
 
         function renderProducts(items) {
             document.getElementById('productGrid').innerHTML = items.map(p => `
                 <div class="product-card">
-                    <span style="font-size:0.7rem; color:var(--accent); font-family:'JetBrains Mono'">${p.cat}</span>
-                    <h3>${p.name}</h3>
-                    <p style="color:var(--dim); font-size:0.85rem; margin-bottom:1.5rem">${p.short}</p>
-                    <div class="footer-row">
-                        <div class="price">${p.price} CZK</div>
-                        <div>
-                            <button class="btn-detail" onclick="openDetail(${p.id})">Detail</button>
-                            <button class="btn-buy" onclick="openOrder('${p.name}', ${p.price})">Koupit</button>
-                        </div>
+                    <span style="color:var(--accent); font-size:0.6rem;">${p.cat.toUpperCase()}</span>
+                    <h3 style="margin:10px 0;">${p.name}</h3>
+                    <p style="color:var(--dim); font-size:0.8rem; margin-bottom:20px;">${p.desc}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+                        <span style="font-weight:bold; font-family:'JetBrains Mono'">${p.price} CZK</span>
+                        <button class="btn-buy" onclick="openModal('${p.name}', '${p.price}', '${p.desc}')">Koupit</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function openDetail(id) {
-            const p = products.find(x => x.id === id);
-            document.getElementById('detTitle').innerText = p.name;
-            document.getElementById('detContent').innerText = p.long;
-            document.getElementById('hiddenProduct').value = p.name;
-            document.getElementById('hiddenPrice').value = p.price + " CZK";
-            document.getElementById('modalPrice').innerText = p.price + " CZK";
-            showStep('stepDetail');
-            document.getElementById('productModal').style.display = 'flex';
-        }
-
-        function openOrder(name, price) {
+        function openModal(name, price, desc) {
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('displayPrice').innerText = price + " CZK";
             document.getElementById('hiddenProduct').value = name;
             document.getElementById('hiddenPrice').value = price + " CZK";
-            document.getElementById('modalPrice').innerText = price + " CZK";
-            showStep('step1');
-            document.getElementById('productModal').style.display = 'flex';
+            const m = document.getElementById('productModal'); m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10);
         }
 
-        function toStep1() { showStep('step1'); }
-        function toStep2() {
-            if(!document.getElementById('customerEmail').value.includes('@')) return alert('Zadejte platný e-mail');
-            showStep('step2');
+        function closeModal() {
+            const m = document.getElementById('productModal'); m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active')); document.getElementById('step1').classList.add('active');
         }
 
-        async function submitForm() {
-            const form = document.getElementById('orderForm');
-            const formData = new FormData(form);
-            const response = await fetch(form.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
-            if (response.ok) { showStep('step3'); } else { alert("Chyba při odesílání."); }
+        function toStep2() { 
+            if(!document.getElementById('customerEmail').value.includes('@')) return alert('Zadej e-mail!'); 
+            document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); 
         }
 
-        function showStep(id) {
-            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        async function finishOrder() {
+            const f = document.getElementById('orderForm');
+            const data = new FormData(f);
+            fetch(f.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+            .then(res => { if (res.ok) { document.getElementById('step2').classList.remove('active'); document.getElementById('step3').classList.add('active'); } });
         }
 
-        function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-
-        function searchProducts() {
-            const t = document.getElementById('searchInput').value.toLowerCase();
-            renderProducts(products.filter(p => p.name.toLowerCase().includes(t) || p.short.toLowerCase().includes(t)));
-        }
-
-        function filterCat(cat) {
-            if (cat === 'all') renderProducts(products);
-            else renderProducts(products.filter(p => p.cat === cat));
-        }
-
+        function filterCat(cat) { if (cat === 'all') renderProducts(products); else renderProducts(products.filter(p => p.cat === cat)); }
         renderProducts(products);
     </script>
 </body>
