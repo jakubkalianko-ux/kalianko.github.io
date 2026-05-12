@@ -4,66 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALIANKO_ULTRA | v7.0 ARCHITECT</title>
+    <title>KALIANKO_ULTRA | v8.0 MOBILE-DYNAMIC</title>
     <style>
         :root {
             --bg: #010409;
             --accent: #00f2ff;
-            --accent-glow: rgba(0, 242, 255, 0.5);
             --text: #e6edf3;
             --card: rgba(13, 17, 23, 0.9);
             --border: rgba(48, 54, 61, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
 
-        #universe { position: fixed; inset: 0; z-index: -1; background: #000; overflow: hidden; }
-        .nebula { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.15; }
-        
+        /* OPTIMALIZOVANÝ VESMÍR */
+        #universe { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%); overflow: hidden; }
+        .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0.5; animation: twinkle var(--d) infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* LAYOUT */
         .sidebar { 
-            width: 320px; height: 100vh; position: fixed; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px); border-right: 1px solid var(--border); padding: 40px;
-            display: flex; flex-direction: column; z-index: 100;
+            width: 300px; height: 100vh; position: fixed; left: 0; top: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border); padding: 40px; display: flex; flex-direction: column; z-index: 100;
         }
 
-        .main-content { margin-left: 320px; padding: 60px; min-height: 100vh; position: relative; }
+        .main-content { margin-left: 300px; padding: 60px; min-height: 100vh; }
 
-        .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(90deg, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .status-dot { width: 8px; height: 8px; background: #238636; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #238636; }
+        /* MOBILE FIX */
+        @media (max-width: 900px) {
+            .sidebar { 
+                width: 100%; height: auto; position: relative; border-right: none; 
+                border-bottom: 1px solid var(--border); padding: 25px; 
+            }
+            .main-content { margin-left: 0; padding: 25px; }
+            .sidebar-bottom { display: none; }
+            #chat-window { width: calc(100% - 40px); right: 20px; bottom: 20px; height: 350px; }
+        }
 
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .logo { font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
+        .logo span { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+
+        h1 { font-size: clamp(2.2rem, 8vw, 3.8rem); font-weight: 900; line-height: 1.1; margin-bottom: 40px; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         .cyber-card { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 30px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;
+            background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px;
+            transition: 0.3s; position: relative; overflow: hidden;
         }
-        .cyber-card:hover { transform: translateY(-10px) scale(1.02); border-color: var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .cyber-card:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(0,242,255,0.1); }
 
         .btn { 
-            width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 20px;
-            background: #21262d; color: var(--text); border: 1px solid var(--border);
+            width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800;
+            text-transform: uppercase; cursor: pointer; margin-top: 20px; font-size: 0.9rem; transition: 0.2s;
         }
-        .btn-primary { background: var(--accent); color: #000; border: none; }
-        .btn-primary:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 20px #fff; }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:active { transform: scale(0.96); }
+        .btn-secondary { background: #21262d; color: #fff; border: 1px solid var(--border); }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: #0d1117; border: 1px solid var(--accent); padding: 40px; border-radius: 24px; width: 450px; text-align: center; }
+        /* MODALY */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: #0d1117; border: 1px solid var(--accent); padding: 35px; border-radius: 28px; width: 100%; max-width: 420px; text-align: center; }
 
-        #chat-window {
-            position: fixed; bottom: 30px; right: 30px; width: 400px; height: 500px;
-            background: rgba(13, 17, 23, 0.95); border: 1px solid var(--accent);
-            border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,1); z-index: 1000; backdrop-filter: blur(10px);
-        }
-        .chat-header { padding: 15px 20px; background: var(--accent); color: #000; font-weight: 800; }
-        #chat-body { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
-        .msg { padding: 10px 15px; border-radius: 12px; max-width: 80%; }
-        .msg-ai { background: #30363d; align-self: flex-start; }
-        .msg-user { background: var(--accent); color: #000; align-self: flex-end; }
-
+        input { width: 100%; padding: 14px; margin: 15px 0; background: #161b22; border: 1px solid var(--border); color: #fff; border-radius: 8px; }
         .hidden { display: none; }
-        input { width: 100%; padding: 12px; margin: 15px 0; background: #161b22; border: 1px solid var(--border); color: #fff; border-radius: 6px; }
+
+        /* CHAT WINDOW */
+        #chat-window {
+            position: fixed; bottom: 30px; right: 30px; width: 320px; height: 450px;
+            background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+            display: flex; flex-direction: column; z-index: 1000; backdrop-filter: blur(10px);
+        }
     </style>
 </head>
 <body>
@@ -71,74 +82,68 @@
     <div id="universe"></div>
 
     <aside class="sidebar">
-        <div class="logo">KALIANKO_LABS</div>
-        <div style="font-size: 0.7rem; margin-top: 5px; color: #8b949e;"><span class="status-dot"></span>SYSTÉM AKTIVNÍ</div>
-
-        <div style="margin-top: 40px;">
-            <p style="color: var(--accent); font-size: 0.7rem; font-weight: 800;">AUTORIZOVANÁ OSOBA</p>
-            <h2 style="font-size: 1.2rem;">Jakub Kalianko</h2>
-            <p style="font-size: 0.8rem; opacity: 0.7;">Věk: 16 let</p>
-            <p style="font-size: 0.8rem; opacity: 0.7;">Role: Technický Génius</p>
+        <div class="logo">KALIANKO<span>_LABS</span></div>
+        <div style="margin-top: 30px;">
+            <p style="font-size: 0.7rem; color: var(--accent); font-weight: 800; letter-spacing: 1px;">AUTORIZOVANÁ OSOBA</p>
+            <h2 style="font-size: 1.3rem;">Jakub Kalianko</h2>
+            <p style="font-size: 0.85rem; opacity: 0.7;">Věk: 17 let</p>
+            <p style="font-size: 0.85rem; opacity: 0.7;">Status: Genius</p>
         </div>
-
-        <div style="margin-top: auto; font-size: 0.8rem; border-top: 1px solid var(--border); pt: 20px;">
+        <div class="sidebar-bottom" style="margin-top: auto; font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 20px;">
             <p>🏦 4875022083 / 0800</p>
             <p>📞 +420 770 155 650</p>
         </div>
     </aside>
 
     <main class="main-content">
-        <div style="margin-bottom: 50px;">
-            <h1 style="font-size: 3.5rem; font-weight: 900;">DIGITÁLNÍ<br><span style="color: var(--accent);">ZBROJNICE</span></h1>
-        </div>
+        <h1>DIGITÁLNÍ<br><span style="color: var(--accent);">ZBROJNICE</span></h1>
 
         <div class="card-grid">
             <div class="cyber-card">
                 <h3 style="color: var(--accent);">K-WIFI_SCANNER</h3>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #8b949e;">Analytický nástroj pro monitoring sítí a detekci zranitelností.</p>
-                <div style="font-size: 1.5rem; margin-top: 20px; font-weight: 800;">149 CZK</div>
-                <button onclick="pay('K-WIFI_SCANNER', 149)" class="btn btn-primary">ZÍSKAT LICENCI</button>
+                <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.7;">Analýza síťového provozu a detekce uzlů.</p>
+                <div style="font-size: 1.6rem; margin-top: 20px; font-weight: 900;">149 CZK</div>
+                <button onclick="pay('K-WIFI_SCANNER', 149)" class="btn btn-primary">KOUPIT LICENCI</button>
             </div>
 
             <div class="cyber-card">
                 <h3 style="color: var(--accent);">K-GHOST_CLICK</h3>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #8b949e;">Rychlý simulátor s lidským vzorcem klikání pro automatizaci.</p>
-                <div style="font-size: 1.5rem; margin-top: 20px; font-weight: 800;">49 CZK</div>
-                <button onclick="pay('K-GHOST_CLICK', 49)" class="btn btn-primary">ZÍSKAT LICENCI</button>
+                <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.7;">Pokročilá simulace klikání s lidským faktorem.</p>
+                <div style="font-size: 1.6rem; margin-top: 20px; font-weight: 900;">49 CZK</div>
+                <button onclick="pay('K-GHOST_CLICK', 49)" class="btn btn-primary">KOUPIT LICENCI</button>
             </div>
 
             <div class="cyber-card">
                 <h3 style="color: var(--accent);">K-IP_MAPPER</h3>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #8b949e;">Nástroj pro vizualizaci síťových tras a geolokaci uzlů.</p>
-                <div style="font-size: 1.5rem; margin-top: 20px; font-weight: 800;">199 CZK</div>
-                <button onclick="pay('K-IP_MAPPER', 199)" class="btn btn-primary">ZÍSKAT LICENCI</button>
+                <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.7;">Trasování a geolokační mapování adres.</p>
+                <div style="font-size: 1.6rem; margin-top: 20px; font-weight: 900;">199 CZK</div>
+                <button onclick="pay('K-IP_MAPPER', 199)" class="btn btn-primary">KOUPIT LICENCI</button>
             </div>
         </div>
 
         <div style="margin-top: 60px;">
-            <h2 style="color: #f2cc60;">HARDWAROVÉ OPRAVY</h2>
+            <h2 style="color: #f2cc60;">HARDWAROVÝ SERVIS</h2>
             <div class="cyber-card" style="margin-top: 20px; border-left: 4px solid #f2cc60;">
-                <p>Jakub se specializuje na opravy elektroniky: Notebooky, PC, ale i elektrické nářadí (vrtačky). Kompletní servis v labu.</p>
-                <button onclick="showContact()" class="btn" style="width: auto; padding: 12px 30px; display: inline-block;">KONTAKTOVAT SERVIS</button>
+                <p>Jakub (17) opravuje notebooky, PC a elektrické nářadí přímo ve svém labu.</p>
+                <button onclick="showContact()" class="btn btn-secondary" style="width: auto; padding: 12px 30px;">KONTAKTOVAT</button>
             </div>
         </div>
     </main>
 
-    <!-- PAYMENT MODAL -->
+    <!-- MODALY -->
     <div id="payment-modal" class="modal">
         <div class="modal-content">
             <div id="p-s1">
-                <h3>AUTORIZACE PLATBY</h3>
-                <input type="email" id="p-email" placeholder="Tvůj e-mail pro zaslání kódu">
-                <button id="p-confirm-btn" onclick="confirmPay()" class="btn btn-primary">POTVRDIT OBJEDNÁVKU</button>
-                <button onclick="closeModals()" class="btn">ZRUŠIT</button>
+                <h3>DOKONČIT OBJEDNÁVKU</h3>
+                <input type="email" id="p-email" placeholder="Tvůj doručovací e-mail">
+                <button id="p-confirm-btn" onclick="confirmPay()" class="btn btn-primary">POTVRDIT</button>
+                <button onclick="closeModals()" class="btn btn-secondary">ZRUŠIT</button>
             </div>
             <div id="p-s2" class="hidden">
-                <h3 style="color: #238636;">POŽADAVEK ODESLÁN</h3>
-                <p style="margin: 15px 0;">Platba na účet:</p>
-                <div style="background: #161b22; padding: 20px; border-radius: 12px; font-family: monospace;">
+                <h3 style="color: #238636;">PŘIJATO</h3>
+                <div style="background: #161b22; padding: 20px; border-radius: 12px; margin: 20px 0; font-family: monospace;">
                     4875022083 / 0800<br>
-                    ČÁSTKA: <span id="final-amt"></span> CZK<br>
+                    CENA: <span id="final-amt"></span> CZK<br>
                     VS: <span id="final-vs" style="color: var(--accent);"></span>
                 </div>
                 <button onclick="location.reload()" class="btn btn-primary">HOTOVO</button>
@@ -146,31 +151,30 @@
         </div>
     </div>
 
-    <!-- CONTACT MODAL -->
     <div id="contact-modal" class="modal">
         <div class="modal-content">
-            <h3 style="color: #f2cc60;">PŘÍMÉ SPOJENÍ</h3>
-            <div style="background: #161b22; padding: 25px; border-radius: 12px; font-size: 1.5rem; font-weight: 800; margin: 20px 0;">
+            <h3 style="color: #f2cc60;">SERVISNÍ LINKA</h3>
+            <div style="background: #161b22; padding: 25px; border-radius: 15px; font-size: 1.5rem; font-weight: 800; margin: 25px 0;">
                 <a href="tel:+420770155650" style="color: #fff; text-decoration: none;">+420 770 155 650</a>
             </div>
-            <button onclick="closeModals()" class="btn">ZAVŘÍT</button>
+            <button onclick="closeModals()" class="btn btn-secondary">ZAVŘÍT</button>
         </div>
     </div>
 
     <script>
-        // TVOJE ID Z SCREENSHOTU image_8f5243.png
         const FORMSPREE_ID = "xeenprvg"; 
 
+        // GENERACE HVĚZD
         const universe = document.getElementById('universe');
-        for(let i=0; i<150; i++) {
-            let star = document.createElement('div');
-            star.style.position = 'absolute';
-            star.style.width = '2px'; star.style.height = '2px';
-            star.style.background = '#fff';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.opacity = Math.random();
-            universe.appendChild(star);
+        for(let i=0; i<100; i++) {
+            let s = document.createElement('div');
+            s.className = 'star';
+            let size = Math.random() * 3 + 'px';
+            s.style.width = size; s.style.height = size;
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.setProperty('--d', (Math.random() * 3 + 2) + 's');
+            universe.appendChild(s);
         }
 
         function closeModals() {
@@ -189,10 +193,9 @@
         async function confirmPay() {
             const email = document.getElementById('p-email').value;
             const btn = document.getElementById('p-confirm-btn');
-            if(!email.includes('@')) return alert("Zadej platný e-mail");
+            if(!email.includes('@')) return alert("Zadej funkční e-mail");
 
-            btn.innerText = "ODESÍLÁM...";
-            btn.disabled = true;
+            btn.innerText = "SPOJOVÁNÍ..."; btn.disabled = true;
             const vs = Math.floor(Math.random() * 1000000);
             document.getElementById('final-vs').innerText = vs;
 
@@ -201,6 +204,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        autor: "Jakub Kalianko (17)",
                         produkt: selProd,
                         zakaznik: email,
                         cena: selPrice + " CZK",
@@ -210,7 +214,7 @@
                 document.getElementById('p-s1').classList.add('hidden');
                 document.getElementById('p-s2').classList.remove('hidden');
             } catch (e) {
-                alert("Chyba spojení.");
+                alert("Chyba terminálu.");
                 btn.disabled = false;
             }
         }
